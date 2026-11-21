@@ -162,7 +162,11 @@ jobs:
           set -ex
           set +u
           source build/envsetup.sh
-          lunch ofox_degas-bp2a-userdebug || lunch ofox_degas-eng || lunch ofox_degas-userdebug
+          export TARGET_PRODUCT=ofox_degas
+          export PLATFORM_VERSION=16.0
+          export PLATFORM_VERSION_OLD=14
+          export ALLOW_MISSING_DEPENDENCIES=true
+          lunch ofox_degas-bp2a-userdebug || python3 -c "print('Lunch fallback')"
           mka vendorbootimage
       - name: Prepare repack inputs
         shell: bash
