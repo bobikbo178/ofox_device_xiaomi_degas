@@ -96,6 +96,7 @@ jobs:
           rm -rf "$tree"
           mkdir -p "$tree"
           rsync -a --exclude .git --exclude .github --exclude rom-blobs \
+            --exclude orangefox --exclude .repo \
             "$GITHUB_WORKSPACE/" "$tree/"
       - name: Overlay ROM blobs from the fork
         shell: bash
