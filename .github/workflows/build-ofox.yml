@@ -46,14 +46,18 @@ jobs:
       FOX_MANIFEST_BRANCH: ${{ inputs.manifest_branch }}
       ROM_NAME: ${{ inputs.rom_name }}
 
-    steps:
-      - name: Free Disk Space
-        run: |
-          sudo rm -rf /usr/share/dotnet
-          sudo rm -rf /opt/ghc
-          sudo rm -rf "/usr/local/share/boost"
-          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
-          sudo docker image prune --all --force
+    steps:      
+    - name: Free Disk Space
+        uses: jlumbroso/free-disk-space@main
+        with:
+          tool-cache: true
+          android: true
+          dotnet: true
+          haskell: true
+          large-packages: true
+          docker-images: true
+          swap-storage: true
+          
 
       - name: Check out the fork
         uses: actions/checkout@v4
