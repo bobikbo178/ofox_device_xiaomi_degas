@@ -46,8 +46,8 @@ jobs:
       FOX_MANIFEST_BRANCH: ${{ inputs.manifest_branch }}
       ROM_NAME: ${{ inputs.rom_name }}
 
-    steps:      
-    - name: Free Disk Space
+    steps:
+      - name: Free Disk Space
         uses: jlumbroso/free-disk-space@main
         with:
           tool-cache: true
@@ -57,7 +57,6 @@ jobs:
           large-packages: true
           docker-images: true
           swap-storage: true
-          
 
       - name: Check out the fork
         uses: actions/checkout@v4
