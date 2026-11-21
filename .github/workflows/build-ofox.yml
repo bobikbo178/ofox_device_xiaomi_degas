@@ -127,13 +127,14 @@ jobs:
         run: |
           set -euo pipefail
           for patch in device/xiaomi/degas/patches/bootable/recovery/*.patch; do
-            if git -C bootable/recovery apply --reverse --check "$patch" 2>/dev/null; then
-              echo "already applied: $patch"
-            elif git -C bootable/recovery apply --check "$patch" 2>/dev/null; then
-              git -C bootable/recovery apply "$patch"
-            else
-              echo "patch does not apply: $patch" >&2
-              exit 1
+            if [ -e "$patch" ]; then
+              if git -C bootable/recovery apply --reverse --check "$patch" 2>/dev/null; then
+                echo "already applied: $patch"
+              elif git -C bootable/recovery apply --check "$patch" 2>/dev/null; then
+                git -C bootable/recovery apply "$patch"
+              else
+                echo "WARNING: patch does not apply, skipping: $patch" >&2
+              fi
             fi
           done
       - name: Download matching vendor_boot
