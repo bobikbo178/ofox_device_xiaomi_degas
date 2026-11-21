@@ -159,10 +159,10 @@ jobs:
         working-directory: orangefox
         shell: bash
         run: |
-          set -eo pipefail
+          set -ex
           set +u
           source build/envsetup.sh
-          lunch ofox_degas-bp2a-eng
+          lunch ofox_degas-bp2a-userdebug || lunch ofox_degas-eng || lunch ofox_degas-userdebug
           mka vendorbootimage
       - name: Prepare repack inputs
         shell: bash
