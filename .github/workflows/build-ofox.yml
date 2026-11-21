@@ -153,6 +153,11 @@ jobs:
             echo 'Provide vendor_boot_url or add rom-blobs/ofox_degas-vendor_boot.img' >&2
             exit 1
           fi
+          
+          # Гарантовано створюємо директорію виводу продукту всередині дерева і копіюємо туди файл
+          mkdir -p "$tree/out/target/product/degas"
+          cp "$tree/ofox_degas-vendor_boot.img" "$tree/out/target/product/degas/vendor_boot.img"
+          
           if [ -n '${{ inputs.vendor_boot_sha256 }}' ]; then
             echo '${{ inputs.vendor_boot_sha256 }}  '"$tree/ofox_degas-vendor_boot.img" | sha256sum -c -
           fi
@@ -180,6 +185,11 @@ jobs:
             curl -sL https://android.googlesource.com/platform/system/tools/mkbootimg/+plain/android14-release/unpack_bootimg.py -o "$GITHUB_WORKSPACE/orangefox/system/tools/mkbootimg/unpack_bootimg.py"
             curl -sL https://android.googlesource.com/platform/system/tools/mkbootimg/+plain/android14-release/mkbootimg.py -o "$GITHUB_WORKSPACE/orangefox/system/tools/mkbootimg/mkbootimg.py"
             chmod +x "$GITHUB_WORKSPACE/orangefox/system/tools/mkbootimg/"*.py
+          fi
+          # Подвійна перевірка наявності файлу перед викликом скрипта
+          mkdir -p out/target/product/degas
+          if [ ! -f "out/target/product/degas/vendor_boot.img" ] && [ -f "$GITHUB_WORKSPACE/orangefox/device/xiaomi/degas/ofox_degas-vendor_boot.img" ]; then
+            cp "$GITHUB_WORKSPACE/orangefox/device/xiaomi/degas/ofox_degas-vendor_boot.img" out/target/product/degas/vendor_boot.img
           fi
           bash patch_touch_clean.sh
       - name: Generate checksums
