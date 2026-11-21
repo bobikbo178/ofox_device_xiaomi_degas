@@ -159,7 +159,8 @@ jobs:
         working-directory: orangefox
         shell: bash
         run: |
-          set -euo pipefail
+          set -eo pipefail
+          set +u
           source build/envsetup.sh
           lunch ofox_degas-bp2a-eng
           mka vendorbootimage
