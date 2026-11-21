@@ -74,7 +74,8 @@ jobs:
             lib32readline-dev lib32z1-dev libelf-dev liblz4-tool \
             libncurses5-dev libncurses-dev libssl-dev libxml2-utils lz4 \
             pngcrush python3 rsync schedtool squashfs-tools unzip xsltproc \
-            zip zlib1g-dev
+            zip zlib1g-dev python3-pip
+          sudo pip3 install pycryptodome
       - name: Install repo
         shell: bash
         run: |
@@ -173,6 +174,13 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          export PATH="$GITHUB_WORKSPACE/orangefox/system/tools/mkbootimg:$GITHUB_WORKSPACE/orangefox/prebuilts/build-tools/linux-x86/bin:$PATH"
+          if [ ! -f "$GITHUB_WORKSPACE/orangefox/system/tools/mkbootimg/unpack_bootimg.py" ]; then
+            mkdir -p "$GITHUB_WORKSPACE/orangefox/system/tools/mkbootimg"
+            curl -sL https://android.googlesource.com/platform/system/tools/mkbootimg/+plain/android14-release/unpack_bootimg.py -o "$GITHUB_WORKSPACE/orangefox/system/tools/mkbootimg/unpack_bootimg.py"
+            curl -sL https://android.googlesource.com/platform/system/tools/mkbootimg/+plain/android14-release/mkbootimg.py -o "$GITHUB_WORKSPACE/orangefox/system/tools/mkbootimg/mkbootimg.py"
+            chmod +x "$GITHUB_WORKSPACE/orangefox/system/tools/mkbootimg/"*.py
+          fi
           bash patch_touch_clean.sh
       - name: Generate checksums
         working-directory: orangefox/device/xiaomi/degas
