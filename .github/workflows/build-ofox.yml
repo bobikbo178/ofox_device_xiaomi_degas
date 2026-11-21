@@ -155,21 +155,6 @@ jobs:
           if [ -n '${{ inputs.vendor_boot_sha256 }}' ]; then
             echo '${{ inputs.vendor_boot_sha256 }}  '"$tree/ofox_degas-vendor_boot.img" | sha256sum -c -
           fi
-      - name: Build OrangeFox vendor_boot
-        working-directory: orangefox
-        shell: bash
-        run: |
-          set -ex
-          set +u
-          # Знешкоджуємо проблемний vendorsetup.sh, щоб він не падав на перевірках
-          echo '# bypassed' > device/xiaomi/degas/vendorsetup.sh
-          source build/envsetup.sh
-          export TARGET_PRODUCT=ofox_degas
-          export PLATFORM_VERSION=16.0
-          export PLATFORM_VERSION_OLD=14
-          export ALLOW_MISSING_DEPENDENCIES=true
-          lunch ofox_degas-bp2a-userdebug || lunch ofox_degas-eng || true
-          mka vendorbootimage
       - name: Prepare repack inputs
         shell: bash
         run: |
@@ -188,15 +173,12 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          export PATH="$GITHUB_WORKSPACE/orangefox/out/host/linux-x86/bin:$PATH"
           bash patch_touch_clean.sh
       - name: Generate checksums
         working-directory: orangefox/device/xiaomi/degas
         shell: bash
         run: |
-          sha256sum ofox_degas-vendor_boot-clean.img \
-            "$GITHUB_WORKSPACE/orangefox/out/target/product/degas/vendor_boot.img" \
-            > SHA256SUMS
+          sha256sum ofox_degas-vendor_boot-clean.img > SHA256SUMS
       - name: Upload recovery images
         uses: actions/upload-artifact@v4
         with:
@@ -204,7 +186,6 @@ jobs:
           if-no-files-found: error
           path: |
             orangefox/device/xiaomi/degas/ofox_degas-vendor_boot-clean.img
-            orangefox/out/target/product/degas/vendor_boot.img
             orangefox/device/xiaomi/degas/SHA256SUMS
           retention-days: 14
           
